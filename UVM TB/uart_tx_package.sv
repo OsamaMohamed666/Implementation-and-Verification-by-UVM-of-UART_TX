@@ -1,0 +1,13 @@
+`include "uart_config.sv"
+
+`include "seq_item.sv"
+`include "base_seq.sv"
+//`include "direct_seq.sv"
+`include "uart_sequencer.sv"
+`include "uart_drv.sv"
+`include "uart_moni_in.sv"
+`include "uart_moni_out.sv"
+`include "uart_agent.sv"
+`include "uart_sb.sv"
+//`include "uart_cov.sv"
+`include "uart_env.sv"
