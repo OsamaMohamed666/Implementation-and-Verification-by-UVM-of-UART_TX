@@ -1,4 +1,4 @@
-# Verification-of-UART_TX-by-UVM
+# Implementation-and-Verification-by-UVM-of-UART_TX
 ## Design specifications are supervised by Eng. Ali El-Temsah:
   1) UART TX receive the new data on P_DATA Bus only when 
 Data_Valid Signal is high.
