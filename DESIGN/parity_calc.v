@@ -1,54 +1,38 @@
-module parity_calc # ( parameter WIDTH = 8 )
+module parity_calc (
 
-(
- input   wire                  CLK,
- input   wire                  RST,
- input   wire                  parity_enable,
- input   wire                  parity_type,
- input   wire   [WIDTH-1:0]    DATA,
- input   wire                  Data_Valid,
- input   wire                  busy,
- output  reg                   parity 
+input           clk,
+input           rst,
+input           data_valid,
+input           par_type,
+input           par_en,
+input			busy,
+input    [7:0]  p_data,
+output reg      par_bit
+
 );
 
-reg  [WIDTH-1:0]    DATA_V ;
+reg [7:0] p_data_temp;
+wire  even_par , odd_par; 
 
-//isolate input 
-always @ (posedge CLK or negedge RST)
- begin
-  if(!RST)
-   begin
-    DATA_V <= 'b0 ;
-   end
-  else if(Data_Valid && !busy)
-   begin
-    DATA_V <= DATA ;
-   end 
- end
- 
-
-always @ (posedge CLK or negedge RST)
- begin
-  if(!RST)
-   begin
-    parity <= 'b0 ;
-   end
-  else
-   begin
-    if (parity_enable)
+always @(posedge clk or negedge rst)
+  begin
+    if(!rst)
 	 begin
-	  case(parity_type)
-	  1'b0 : begin                 
-	          parity <= ^DATA_V  ;     // Even Parity
-	         end
-	  1'b1 : begin
-	          parity <= ~^DATA_V ;     // Odd Parity
-	         end		
-	  endcase       	 
-	 end
-   end
- end 
-
-
+	  par_bit <= 0;
+	  p_data_temp <= 0;
+	 end 
+	else if (data_valid && !busy)
+	 p_data_temp <= p_data;
+	else if (par_en)
+	 begin 
+	  if(par_type)
+	   par_bit <= odd_par;
+	  else
+	   par_bit <= even_par;	
+	 end 
+  end
+   
+assign odd_par = (^p_data_temp==0) ? 1 : 0;
+assign even_par = (^p_data_temp) ? 1 : 0;
 endmodule
- 
+
