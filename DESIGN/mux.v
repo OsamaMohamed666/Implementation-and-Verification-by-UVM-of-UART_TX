@@ -1,51 +1,35 @@
+module mux (
+input       clk,
+input       rst,
+input       start_bit,
+input       stop_bit,
+input       ser_data,
+input       par_bit,
+input [1:0] mux_sel,
+output reg  TX_OUT
 
-module mux  (
+);
 
- input   wire                  CLK,
- input   wire                  RST,
- input   wire                  IN_0,
- input   wire                  IN_1,
- input   wire                  IN_2,
- input   wire                  IN_3,
- input   wire     [1:0]        SEL,
- output  reg                   OUT 
+reg TX_OUT_temp;
 
- );
-
-reg              mux_out ;
- 
-always @ (*)
-  begin
-   case(SEL)
-	2'b00 : begin                 
-	         mux_out <= IN_0 ;       
-	        end
-	2'b01 : begin
-	         mux_out <= IN_1 ;      
-	        end	
-	2'b10 : begin
-	         mux_out <= IN_2 ;       
-	        end	
-	2'b11 : begin
-	         mux_out <= IN_3 ;      
-	        end		
-	endcase        	   
-  end
- 
-
-//register mux output
-always @ (posedge CLK or negedge RST)
+always@(posedge clk or negedge rst)
  begin
-  if(!RST)
-   begin
-    OUT <= 'b0 ;
-   end
-  else
-   begin
-    OUT <= mux_out ;
-   end 
- end  
- 
- 
-endmodule
- 
+  if(!rst)
+   TX_OUT<=0;
+  else 
+   TX_OUT<=TX_OUT_temp;
+ end
+
+always @(*)
+ begin
+    case (mux_sel)
+     2'b00 : TX_OUT_temp=start_bit;
+     2'b01 : TX_OUT_temp=ser_data;
+     2'b10 : TX_OUT_temp=par_bit;
+     2'b11 : TX_OUT_temp=stop_bit;
+	 default: TX_OUT_temp=1'b1;
+    endcase 
+ end
+
+
+endmodule 
